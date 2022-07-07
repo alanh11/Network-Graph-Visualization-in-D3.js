@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <title>2-file dataset visualization</title>
+  <link rel="stylesheet" href="style.css">
+
+  <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="//d3js.org/d3.v5.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.71/jquery.csv-0.71.min.js"></script>
+</head>
+
+<body>
+
+  <div class="sidebar">
+    <div class="logo-details">
+
+      <a href="#" class="logo_name" id="entry-point-filter">
+        <div>Filter</div>
+      </a>
+
+      <a href="#" class="logo_name" id="entry-point-search">
+        <div>Search</div>
+      </a>
+
+      <a href="#" class="logo_name" id="graph-filer">
+        <div>Filter Options</div>
+      </a>
+
+    </div>
+    <ul class="nav-links">
+
+
+      <li class="entry-point-search">
+        <div class="iocn-link" id="search">
+          <a href="#">
+            <i class='bx bx-search'></i>
+          </a>
+          <span class="link_name"><input type="text" class="searchBox" id="searchBox" /></span>
+          <i class='bx bxs-chevron-down arrow'></i>
+        </div>
+        <ul class="sub-menu" id="search-category-sub-menu">
+          <li><a class="link_name" href="#"></a></li>
+          <li class="checkbox-option">
+            <div class="checkbox"><input type="checkbox" class="search_category_all"
+                onclick="uncheckOtherCheckboxSearch(this);" checked></div>
+            <a href="#">&nbsp;All</a>
+          </li>
+        </ul>
+      </li>
+
+      <li class="entry-point-search" id="entry-point-search-hop">
+        <div class="iocn-link" style="justify-content: left;">
+          <i class='bx bx-compass'></i>
+
+          <span>Hops: &nbsp;<input type="number" class="hopBox" id="hopBox" min="0" value="0"></span>
+        </div>
+      </li>
+
+      <li id="show-graph-btn">
+        <a href="#" class="profile-details">
+          <div class="profile_name" style="margin:0 auto;">Show Graph</div>
+        </a>
+      </li>
+
+      <li id="graph_filter_btn">
+        <a href="#" class="profile-details">
+          <div class="profile_name" style="margin:0 auto;">Apply Filter</div>
+        </a>
+      </li>
+
+    </ul>
+  </div>
+  <section class="home-section">
+    <div class="home-content">
+      <i class='bx bx-menu'></i>
+
+      <div class="navbar" id="navbar-left">
+
+        <div class="dropdown">
+          <button class="dropbtn" id="timeline_btn">Function
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href="#" id="related-nodes-btn">Related Nodes</a>
+            <a href="#" id="shortest-route-btn">Shortest Route</a>
+            <a href="#" id="clustering-btn">Clustering</a>
+            <a href="#" id="highlights-btn">Highlights</a>
+            <a href="#" id="remove-highlights-btn">Remove Highlights</a>
+            <a href="#" id="capture-btn">Capture</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="navbar" id="navbar-right">
+
+        <div class="dropdown">
+          <button class="dropbtn" id="reload-btn">Reload
+            <i class="fa fa-caret-down"></i>
+          </button>
+        </div>
+
+        <div class="dropdown">
+          <button class="dropbtn" id="restart-btn" onClick="window.location.reload();">Restart
+            <i class="fa fa-caret-down"></i>
+          </button>
+        </div>
+
+        <div class="dropdown">
+          <button class="dropbtn" id="exit-combo-btn" style="display: none;">Exit Combo
+            <i class="fa fa-caret-down"></i>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="chart-section">
+      <div id="left-tool-bar">
+        <button class="left-tool-bar-btn" id="fix-nodes-btn" disabled>
+          Fix
+        </button>
+
+        <button class="left-tool-bar-btn" id="unfix-nodes-btn" disabled>
+          Unfix
+        </button>
+
+        <button class="left-tool-bar-btn" id="play" disabled>
+          <i class='bx bx-play-circle'></i>
+        </button>
+
+        <button class="left-tool-bar-btn" id="pause" disabled>
+          <i class='bx bx-pause-circle'></i>
+        </button>
+      </div>
+
+      <div id="chart-container">
+      </div>
+
+      <div id="right-tool-bar">
+        <div class="right-tool-bar-section">
+          <div class="right-tool-bar-section-title-container">
+            <label class="right-tool-bar-section-title">Details</label>
+          </div>
+          <div class="right-tool-bar-section-content">
+
+          </div>
+        </div>
+
+        <div class="right-tool-bar-section">
+          <div class="right-tool-bar-section-title-container">
+            <label class="right-tool-bar-section-title">Color</label>
+          </div>
+          <div class="right-tool-bar-section-content" id="node_color_sub_menu">
+          </div>
+        </div>
+
+        <div class="right-tool-bar-section">
+          <div class="right-tool-bar-section-title-container">
+            <label class="right-tool-bar-section-title">Size</label>
+          </div>
+          <div class="right-tool-bar-section-content" id="node_size_sub_menu">
+          </div>
+        </div>
+
+        <div class="right-tool-bar-section">
+          <div class="right-tool-bar-section-title-container">
+            <label class="right-tool-bar-section-title">Combo</label>
+          </div>
+          <div class="right-tool-bar-section-content" id="top_combo_sub_menu">
+          </div>
+        </div>
+
+        <div class="right-tool-bar-section">
+          <div class="right-tool-bar-section-title-container">
+            <label class="right-tool-bar-section-title">Class</label>
+          </div>
+          <div class="right-tool-bar-section-content" id="timeline_sub_menu">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="bottom-tool-bar">
+    </div>
+
+  </section>
+
+  <script src="script.js"></script>
+
+</body>
+
+</html>
